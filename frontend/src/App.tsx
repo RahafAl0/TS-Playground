@@ -1,4 +1,6 @@
 import { useState } from "react";
+// import { Link } from 'react-router-dom'
+
 import "./App.css";
 
 function App() {
@@ -20,7 +22,17 @@ function App() {
   };
 
   return (
-    <>
+  <>
+    {/* <nav>
+          <ul>
+            <li>
+              <Link to={`/`}>Home</Link>
+            </li>
+            <li>
+              <Link to={`/messages`}>Messages</Link>
+            </li>
+          </ul>
+          </nav>  */}
       <h1>{message}</h1>
 
       <input
