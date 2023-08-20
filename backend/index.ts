@@ -9,18 +9,27 @@ const port = "3000" || process.env.PORT;
 
 app.use(cors());
 
-app.get('/hello', (req, res) => {
-  const html = '<h1>Hello World!</h1>';
-  res.send(html);
+app.get("/hello", (req, res) => {
+  const username = req.query.username;
+  if (!username) {
+    return res.send("<h1>No greeting for anonymos!</h1>");
+  }
+
+  if (username === "Rahaf") {
+    return res.send(`<h1>Hello Boss  ${username}</h1>` );
+  } else {
+    return res.send( `<h1>Hello ${username}</h1>`);
+  }
+
+  // const html = "<h1>Hello World!</h1>";
+  // res.send(html);
 });
 
-
 app.get("/", (req: Request, res: Response) => {
- 
   const username: any = req.query.username;
 
-  if (!username){
-    return res.json({ message: "No greeting for anonymos!" })
+  if (!username) {
+    return res.json({ message: "No greeting for anonymos!" });
   }
 
   if (username === "Rahaf") {
@@ -28,7 +37,6 @@ app.get("/", (req: Request, res: Response) => {
   } else {
     res.json({ message: "Hello " + username });
   }
- 
 });
 
 app.listen(port, () => {
