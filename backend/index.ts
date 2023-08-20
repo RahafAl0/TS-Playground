@@ -9,11 +9,18 @@ const port = "3000" || process.env.PORT;
 
 app.use(cors());
 
+app.get('/hello', (req, res) => {
+  const html = '<h1>Hello World!</h1>';
+  res.send(html);
+});
+
+
 app.get("/", (req: Request, res: Response) => {
+ 
   const username: any = req.query.username;
 
   if (!username){
-    return res.json({ message: "No greeting for anonymous!" })
+    return res.json({ message: "No greeting for anonymos!" })
   }
 
   if (username === "Rahaf") {
