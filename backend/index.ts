@@ -1,13 +1,18 @@
-import express, { Express, Request, Response } from "express";
+import express from "express";
+import { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-
-dotenv.config();
+import messagesRouter from "./controllers/messages";
 
 const app: Express = express();
 const port = "3000" || process.env.PORT;
 
 app.use(cors());
+app.use(express.json());
+
+app.use("/messages", messagesRouter);
+
+dotenv.config();
 
 app.get("/hello", (req, res) => {
   const username = req.query.username;
@@ -16,9 +21,9 @@ app.get("/hello", (req, res) => {
   }
 
   if (username === "Rahaf") {
-    return res.send(`<h1>Hello Boss  ${username}</h1>` );
+    return res.send(`<h1>Hello Boss  ${username}</h1>`);
   } else {
-    return res.send( `<h1>Hello ${username}</h1>`);
+    return res.send(`<h1>Hello ${username}</h1>`);
   }
 
   // const html = "<h1>Hello World!</h1>";
