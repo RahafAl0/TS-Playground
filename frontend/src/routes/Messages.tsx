@@ -4,21 +4,26 @@ import axios from "axios";
 import { Button, Container, TextField } from "@mui/material";
 import FormDialog from "./AddMessages.tsx";
 import DeleteMessages from "./DeleteMessage.tsx";
+import EditMessages from "./EditMessages.tsx";
 
 export default function Messages() {
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3000/messages")
-      .then((response) => {
-        setMessages(response.data.messages);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  });
+  const reloadMessages = async () => {
+    axios.get('http://localhost:3000/messages')
+    .then((response) => {
+      setMessages(response.data.messages);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
 
+  useEffect(() => {
+    reloadMessages()
+  },[]);
+
+  
   return (
     <div>
       <div>
@@ -46,7 +51,7 @@ export default function Messages() {
             {item.username}
             <p>{item.message}
               <DeleteMessages id={item.id}/>
-            
+              <EditMessages id={item.id}/>
            </p>
            
           </li>
