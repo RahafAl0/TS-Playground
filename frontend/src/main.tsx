@@ -1,39 +1,33 @@
-import React from 'react'
-import Root from './routes/root.tsx';
-import ReactDOM from 'react-dom/client'
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-// import App from './App.tsx'
-import './index.css'
-import App from './App.tsx';
+import React from "react";
+import Root from "./routes/root.tsx";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./index.css";
+import App from "./App.tsx";
+import Messages from "./routes/Messages.tsx";
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element : <Root/>,
+    path: "/",
+    element: <Root />,
     children: [
       {
         path: "/messages",
-        element: <div> 
-          <h1>Messges!</h1>
-        </div>,
+        element: (
+          <Messages />
+        ),
       },
       {
         path: "/",
-        element : <App/>
-      }
-
-    ]
-  }
-  ,{
-   
-  }
+        element: <App />,
+      },
+    ],
+  },
+  {},
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
-  </React.StrictMode>,
-)
+  </React.StrictMode>
+);
