@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, Container, TextField } from "@mui/material";
-import FormDialog from "./AddMessages.tsx";
+import Search from "./search.tsx";
 import DeleteMessages from "./DeleteMessage.tsx";
 import EditMessages from "./EditMessages.tsx";
+// import { ListItem } from "@mui/material";
 
 export default function Messages() {
   const [messages, setMessages] = useState([]);
@@ -26,24 +26,7 @@ export default function Messages() {
   
   return (
     <div>
-      <div>
-        <Container
-          maxWidth="md"
-          sx={{ mt: 20 }}
-          color="primary"
-          background-color="primary"
-        >
-          <TextField
-            type="search"
-            id="search"
-            label="Search"
-            sx={{ width: 600 }}
-          />
-          <Button>
-            <FormDialog />
-          </Button>
-        </Container>
-      </div>
+      <Search />
       <h1>Messges!</h1>
       <ul>
         {messages.map((item: any, idx: any) => (
