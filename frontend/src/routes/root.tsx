@@ -14,6 +14,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Link from "@mui/material/Link";
 
+
 // export default function Root() {
 //   return (
 //     <div >
@@ -46,7 +47,16 @@ interface Props {
 }
 
 const drawerWidth = 240;
-const navItems = [{name: 'Home', link: '/'}, {name: 'Messages', link: '/messages'}];
+// const navItems = [
+//   {
+//     name: 'Home',
+//     link: '/',
+//   },
+//   {
+//     name: 'Messages',
+//     link: '/messages',
+//   },
+// ];
 
 export default function DrawerAppBar(props: Props) {
   const { window } = props;
@@ -62,14 +72,19 @@ export default function DrawerAppBar(props: Props) {
         MU
       </Typography>
       <Divider />
-      {navItems.map(item => (
-        <Link key={item.name} component={RouterLink} to={item.link}>
-          
-          <Button sx={{ color: '#000' }}>{item.name}</Button>
-        </Link>
-      ))}
+      <Link component={RouterLink} to="/">
+        <Button>Home</Button>
+      </Link>
+      <Divider />
+      <Link component={RouterLink} to="/messages">
+        <Button>Messages</Button>
+      </Link>
+      <Divider />
+
     </Box>
   );
+
+
 
   const container = window !== undefined ? () => window().document.body : undefined;
 
@@ -98,11 +113,13 @@ export default function DrawerAppBar(props: Props) {
             MUI
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            {navItems.map((item) => (
-              <Button key={item.link} sx={{ color: '#fff' }}>
-                {item.name}
-              </Button>
-            ))}
+          <Link component={RouterLink} to="/">
+        <Button color="error">Home</Button>
+      </Link>
+      <Divider />
+      <Link component={RouterLink} to="/messages">
+        <Button color="error">Messages</Button>
+      </Link>
           </Box>
         </Toolbar>
       </AppBar>
