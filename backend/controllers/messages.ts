@@ -1,33 +1,7 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
 
-let messagesDB: MessagesDB = [
-  {
-    id: "1",
-    username: "Rashed",
-    message: "Rashed Message",
-  },
-  {
-    id: "2",
-    username: "Rahaf",
-    message: "Rahaf Message",
-  },
-  {
-    id: "3",
-    username: "Rahaf",
-    message: "This is a Message",
-  },
-  {
-    id: "4",
-    username: "Rahaf",
-    message: "Another Message",
-  },
-  {
-    id: "5",
-    username: "userx",
-    message: "xxxxxxx",
-  },
-];
+let messagesDB: MessagesDB = [];
 
 type Message = {
   id: string;
@@ -39,7 +13,6 @@ type MessagesDB = Message[];
 
 const messagesRouter = express.Router();
 
-
 messagesRouter.get("/search", (req, res) => {
   const { username, term } = req.query;
 
@@ -49,17 +22,15 @@ messagesRouter.get("/search", (req, res) => {
       .json({ error: "At least one of username and term is required." });
   }
 
-  let filteredMessages: Message[] = messagesDB;
+  let filteredMessages: Message[] = [];
 
   if (username) {
-    filteredMessages = filteredMessages.filter(
-      (msg) => msg.username === username
-    );
+    filteredMessages = messagesDB.filter((msg) => msg.username === username);
   }
 
   if (term) {
-    filteredMessages = filteredMessages.filter((msg) =>
-      msg.message.includes(term as string)
+    filteredMessages = filteredMessages.concat(
+      messagesDB.filter((msg) => msg.message.includes(term as string))
     );
   }
 
@@ -83,10 +54,24 @@ messagesRouter.get("/:id", (req, res) => {
 });
 
 messagesRouter.post("/", (req, res) => {
-  const newMessage: Message = req.body;
-  newMessage.id = uuidv4();
+  const { username, message } = req.body;
+
+  if (!username || !message) {
+    return res.status(400).json({ error: "Username and message are required" });
+  }
+
+  const truncatedMessage =
+    message.length > 15 ? message.slice(0, 15) + "..." : message;
+
+  const newMessage = {
+    id: uuidv4(),
+    username,
+    message: truncatedMessage,
+  };
+
   messagesDB.push(newMessage);
-  res.json(newMessage);
+
+  res.status(201).json(newMessage);
 });
 
 messagesRouter.delete("/:id", (req, res) => {
@@ -106,12 +91,15 @@ messagesRouter.put("/:id", (req, res) => {
   const message = req.params.id;
   const messageToUpdate = messagesDB.find((msg) => msg.id === message);
 
+  const truncatedMessage = req.body.message.length > 15 ? req.body.message.slice(0, 15) + "..." : req.body.message;
+
+
   if (messageToUpdate) {
-    const updatedMessage: Message = req.body;
-    messageToUpdate.message = updatedMessage.message;
+    messageToUpdate.message = truncatedMessage;
     res.json(messageToUpdate);
   } else {
     res.status(404).json({ error: "Message not found" });
   }
+
 });
 export default messagesRouter;
