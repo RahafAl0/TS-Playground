@@ -1,5 +1,5 @@
 import express from "express";
-import { v4 as uuidv4 } from "uuid";
+import { MessageRepo } from "../db/messageRepo";
 
 let messagesDB: MessagesDB = [];
 
@@ -38,13 +38,13 @@ messagesRouter.get("/search", (req, res) => {
 });
 
 messagesRouter.get("/", (req, res) => {
-  const messagesCount = messagesDB.length;
-  res.json({ messages: messagesDB, count: messagesCount });
+  const messages = MessageRepo.getAll()
+  res.json({ messages, count: messages.length });
 });
 
 messagesRouter.get("/:id", (req, res) => {
   const urlID = req.params.id;
-  const message = messagesDB.find((msg) => msg.id === urlID);
+  const message = MessageRepo.find(urlID);
 
   if (message) {
     res.json(message);
@@ -60,27 +60,23 @@ messagesRouter.post("/", (req, res) => {
     return res.status(400).json({ error: "Username and message are required" });
   }
 
-  const truncatedMessage =
-    message.length > 15 ? message.slice(0, 15) + "..." : message;
-
-  const newMessage = {
-    id: uuidv4(),
+  const id = MessageRepo.add({
     username,
-    message: truncatedMessage,
-  };
+    message
+  })
 
-  messagesDB.push(newMessage);
+  const newMessage = MessageRepo.find(id)
 
   res.status(201).json(newMessage);
 });
 
 messagesRouter.delete("/:id", (req, res) => {
   const message = req.params.id;
-  const Length = messagesDB.length;
+  const length = MessageRepo.getAll().length;
 
-  messagesDB = messagesDB.filter((msg) => msg.id !== message);
+  MessageRepo.delete(message);
 
-  if (messagesDB.length < Length) {
+  if (messagesDB.length < length) {
     res.json({ message: "Message deleted successfully" });
   } else {
     res.status(404).json({ error: "Message not found" });
