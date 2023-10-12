@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useQuery } from '@tanstack/react-query'; // Import from @tanstack/react-query
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Search from './search.tsx';
 import DeleteMessages from './DeleteMessage.tsx';
@@ -20,7 +20,7 @@ export default function Messages() {
       {isLoading ? (
         <p>Loading...</p>
       ) : isError ? (
-        <p>Error loading messages</p>
+        <p>Error loading messages</p> 
       ) : (
         <ul>
           {data.messages.map((item: any, idx: any) => (

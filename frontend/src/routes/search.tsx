@@ -1,54 +1,44 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query"
 import axios from "axios";
 import { Button, Container, TextField } from "@mui/material";
 import FormDialog from "./AddMessages.tsx";
 
+interface Message {
+  id: number;
+  content: string;
+}
 
-
-  interface Message {
-    id: number;
-    content: string;
-  }
 export default function Search() {
-    
   const [searchMessages, setSearchMessages] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [messageCount, setMessageCount] = useState<number>(0);
-
-  useEffect(() => {
-    fetchMessageCount();
-  }, []);
 
   const fetchMessageCount = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/messages');
-      setMessageCount(response.data.count);
-    } catch (error) {
-      console.error('Error fetching message count:', error);
-    }
+    const response = await axios.get('http://localhost:3000/messages');
+    return response.data.count;
   };
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:3000/messages/search?username=${searchMessages}&term=${searchMessages}`
-      );
-      setSearchResults(response.data.messages);
-    } catch (error) {
-      console.error("Error searching for messages:", error);
-    }
+  const fetchSearchResults = async () => {
+    const response = await axios.get(
+      `http://localhost:3000/messages/search?username=${searchMessages}&term=${searchMessages}`
+    );
+    return response.data.messages;
   };
+
+  const { data: messageCount, isError: messageCountError } = useQuery(["messageCount"], fetchMessageCount);
+
+  const { data: searchResults = [], isError: searchResultsError } = useQuery(
+    ["searchMessages", searchMessages],
+    fetchSearchResults,
+    {
+      enabled: !!searchMessages,
+    }
+  );
 
   return (
     <div>
-         <p>Total Messages: {messageCount}</p>
-      <Container
-        maxWidth="md"
-        sx={{ mt: 20 }}
-        color="primary"
-        background-color="primary"
-      >
+      <p>Total Messages: {messageCountError ? "Error" : (messageCount || "Loading...")}</p>
+      <Container maxWidth="md" sx={{ mt: 20 }} color="primary" background-color="primary">
         <TextField
           type="text"
           value={searchMessages}
@@ -57,23 +47,24 @@ export default function Search() {
           label="Search"
           sx={{ width: 600 }}
         />
-        <Button>
-          <button onClick={handleSearch}>Search</button>
-
-          <FormDialog />
-        </Button>
+        <Button onClick={() => {}}>Search</Button>
+        <FormDialog />
         <div>
-            {searchResults.map((item: any, idx: any) => (
-              <Message key={idx} content={item.message} id={0} />
-            ))}
-      </div>
+          {searchResultsError ? (
+            <p>Error searching for messages</p>
+          ) : (
+            searchResults.map((item: Message, idx: any) => (
+              <Message key={idx} content={item.content} id={item.id} />
+            ))
+          )}
+        </div>
       </Container>
     </div>
   );
 }
 
 const Message: React.FC<Message> = ({ content }) => (
-    <div>
-      <p>{content}</p>
-    </div>
-  );
+  <div>
+    <p>{content}</p>
+  </div>
+);
